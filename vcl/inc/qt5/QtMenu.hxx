@@ -38,7 +38,7 @@ class QtFrame;
 class QtMenu : public QObject, public SalMenu
 {
     Q_OBJECT
-private:
+
     std::vector<QtMenuItem*> maItems;
     VclPtr<Menu> mpVCLMenu;
     QtMenu* mpParentSalMenu;
@@ -49,6 +49,9 @@ private:
     std::unique_ptr<QMenu> mpOwnedQMenu;
     // pointer to QMenu owned by the corresponding QtMenuItem or self (-> mpOwnedQMenu)
     QMenu* mpQMenu;
+
+    css::uno::Reference<css::ui::dialogs::XDialogClosedListener> m_xListener;
+    FloatingWindow* m_pWin;
 
     void DoFullMenuUpdate(Menu* pMenuBar);
     static void NativeItemText(OUString& rItemText);
@@ -71,8 +74,9 @@ public:
     virtual void SetFrame(const SalFrame* pFrame) override;
     const QtFrame* GetFrame() const;
     virtual void ShowMenuBar(bool bVisible) override;
-    virtual bool ShowNativePopupMenu(FloatingWindow* pWin, const tools::Rectangle& rRect,
-                                     FloatWinPopupFlags nFlags) override;
+    virtual bool ShowNativePopupMenu(
+        FloatingWindow*, const tools::Rectangle&, FloatWinPopupFlags,
+        const css::uno::Reference<css::ui::dialogs::XDialogClosedListener>* = nullptr) override;
     QtMenu* GetTopLevel();
     virtual void SetItemBits(unsigned nPos, MenuItemBits nBits) override;
     virtual void CheckItem(unsigned nPos, bool bCheck) override;
